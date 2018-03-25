@@ -46,7 +46,7 @@ public class PersonaDAOSQL implements PersonaDAO {
 			statement = conexion.getSQLConexion().prepareStatement(delete);
 			statement.setString(1, Long.toString(persona_a_eliminar.getIdPersona()));
 			chequeoUpdate = statement.executeUpdate();
-			if (chequeoUpdate > 0) // Si se ejecutó devuelvo true
+			if (chequeoUpdate > 0) // Si se ejecutó devuelvo true			
 				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();

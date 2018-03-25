@@ -58,6 +58,10 @@ public class Agenda {
 		this.localidad.delete(localidad_a_eliminar);
 	}
 	
+	public boolean estaUsadaLocalidad(LocalidadDTO localidad_a_eliminar) {
+		return this.localidad.isUsed(localidad_a_eliminar);
+	}
+	
 	public void actualizarLocalidad(LocalidadDTO localidad_a_actualizar) {
 		this.localidad.update(localidad_a_actualizar);
 	}
@@ -93,6 +97,10 @@ public class Agenda {
 
 	public void borrartipoDeContacto(TipoDeContactoDTO tipoDeContacto_a_eliminar) {
 		this.tipoDeContacto.delete(tipoDeContacto_a_eliminar);
+	}
+	
+	public boolean estaUsadoTipoDeContacto(TipoDeContactoDTO tipoDeContacto) {
+		return this.tipoDeContacto.isUsed(tipoDeContacto);
 	}
 	
 	public void actualizarTipoDeContacto(TipoDeContactoDTO tipoDeContactor_a_actualizar) {

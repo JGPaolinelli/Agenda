@@ -16,6 +16,7 @@ public class VentanaTipoDeContacto extends JFrame {
 	private JTextField txtTipoDeContacto;
 	private JButton btnAgregarTipoDeContacto;
 	private Controlador controlador;
+	private JTextField textId;
 
 	public VentanaTipoDeContacto(Controlador controlador) {
 		this.controlador = controlador;
@@ -28,7 +29,7 @@ public class VentanaTipoDeContacto extends JFrame {
 		contentPanel.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 350, 150);
+		panel.setBounds(10, 11, 314, 119);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 
@@ -43,14 +44,24 @@ public class VentanaTipoDeContacto extends JFrame {
 
 		btnAgregarTipoDeContacto = new JButton("Agregar");
 		btnAgregarTipoDeContacto.addActionListener(this.controlador);
-		btnAgregarTipoDeContacto.setBounds(80, 80, 89, 23);
+		btnAgregarTipoDeContacto.setBounds(86, 63, 113, 23);
 		panel.add(btnAgregarTipoDeContacto);
+		
+		textId = new JTextField();
+		textId.setBounds(10, 88, 86, 20);
+		panel.add(textId);
+		textId.setColumns(10);
+		textId.setVisible(false);
 
 		this.setVisible(true);
 	}
 
 	public JTextField getTxtTipoDeContacto() {
 		return txtTipoDeContacto;
+	}
+	
+	public JTextField getTxtId() {
+		return textId;
 	}
 
 	public JButton getBtnAgregarTipoDeContacto() {

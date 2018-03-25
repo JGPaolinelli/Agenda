@@ -5,17 +5,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import dto.TipoDeContactoDTO;
 import persistencia.conexion.Conexion;
 import persistencia.dao.interfaz.TipoDeContactoDAO;
 
 public class TipoDeContactoDAOSQL implements TipoDeContactoDAO {
-	
+
 	private static final String insert = "INSERT INTO tiposdecontactos (idTipoDeContacto, tipoDeContacto) VALUES (?, ?)";
 	private static final String delete = "DELETE FROM tiposdecontactos WHERE idTipoDeContacto=?";
-    private static final String update = "UPDATE tiposdecontactos SET tipoDeContacto=? WHERE idTipoDeContacto=?";
+	private static final String update = "UPDATE tiposdecontactos SET tipoDeContacto=? WHERE idTipoDeContacto=?";
 	private static final String readall = "SELECT * FROM tiposdecontactos";
+	private static final String isUsed = "SELECT * FROM personas WHERE idTipoDeContacto = ?";
 
 	public boolean insert(TipoDeContactoDTO tipoDeContacto) {
 		PreparedStatement statement;
@@ -52,11 +52,28 @@ public class TipoDeContactoDAOSQL implements TipoDeContactoDAO {
 		PreparedStatement statement;
 		Conexion conexion = Conexion.getConexion();
 		try {
-			statement = conexion.getSQLConexion().prepareStatement(update);			
+			statement = conexion.getSQLConexion().prepareStatement(update);
 			statement.setString(1, tipoDeContacto.getTipoDeContacto());
 			statement.setLong(2, tipoDeContacto.getIdTipoDeContacto());
 			if (statement.executeUpdate() > 0) // Si se ejecutó devuelvo true
 				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean isUsed(TipoDeContactoDTO tipoDeContacto) {
+		PreparedStatement statement;
+		Conexion conexion = Conexion.getConexion();
+		try {
+			statement = conexion.getSQLConexion().prepareStatement(isUsed);
+			statement.setString(1, Long.toString(tipoDeContacto.getIdTipoDeContacto()));
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+			return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -73,10 +90,8 @@ public class TipoDeContactoDAOSQL implements TipoDeContactoDAO {
 			resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				tipoDeContactos.add(new TipoDeContactoDTO(
-						resultSet.getLong("idTipoDeContacto"),
-						resultSet.getString("tipoDeContacto")
-						));
+				tipoDeContactos.add(new TipoDeContactoDTO(resultSet.getLong("idTipoDeContacto"),
+						resultSet.getString("tipoDeContacto")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -117,7 +117,6 @@ public class VentanaPersona extends JFrame {
 		txtFechaDeNacimiento.setColumns(10);
 		PromptSupport.setPrompt("AAAA-MM-DD", txtFechaDeNacimiento);
 		
-		
 		txtCalle = new JTextField();
 		txtCalle.setBounds(133, 227, 164, 20);
 		panel.add(txtCalle);
@@ -174,7 +173,6 @@ public class VentanaPersona extends JFrame {
 		panel.add(lblPersona);
 		txtIdDomicilio.setVisible(false);
 		
-
 		this.setVisible(true);
 	}
 

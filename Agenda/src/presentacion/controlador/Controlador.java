@@ -117,7 +117,8 @@ public class Controlador implements ActionListener {
 				this.agenda.borrarPersona(this.personas_en_tabla.get(fila));
 			}
 			this.llenarTabla();
-
+			this.llenarTablaLocalidades();
+			llenarTablaTipoDeContactos();
 		} else if (e.getSource() == this.vista.getBtnReporte()) {
 			ReporteAgenda reporte = new ReporteAgenda(
 					Herramientas.agregarSignoZodiaco(agenda.obtenerPersonasOrdenadasPorFechaNacimiento()));
@@ -174,15 +175,29 @@ public class Controlador implements ActionListener {
 		} else if (e.getSource() == this.vista.getBtnBorrarTipoDeContacto()) {
 			int[] filas_seleccionadas = this.vista.getTablaTipoDeContactos().getSelectedRows();
 			for (int fila : filas_seleccionadas) {
-				this.agenda.borrartipoDeContacto(this.tipoDeContactosEnTabla.get(fila));
+				if (!this.agenda.estaUsadoTipoDeContacto(this.tipoDeContactosEnTabla.get(fila))) {
+					this.agenda.borrartipoDeContacto(this.tipoDeContactosEnTabla.get(fila));
+				} else {
+					JOptionPane.showMessageDialog(null, "EL TIPO DE CONTACTO QUE SELECCIONO ESTA EN USO",
+							"TIPO DE CONTACTO", JOptionPane.WARNING_MESSAGE);
+				}
 			}
-			this.llenarTablaTipoDeContactos();
+			this.llenarTabla();
+			this.llenarTablaLocalidades();
+			llenarTablaTipoDeContactos();
 		} else if (e.getSource() == this.vista.getBtnBorrarLocalidad()) {
 			int[] filas_seleccionadas = this.vista.getTablaLocalidades().getSelectedRows();
 			for (int fila : filas_seleccionadas) {
-				this.agenda.borrarLocalidad(this.localidadesEnTabla.get(fila));
+				if (!this.agenda.estaUsadaLocalidad(this.localidadesEnTabla.get(fila))) {
+					this.agenda.borrarLocalidad(this.localidadesEnTabla.get(fila));
+				} else {
+					JOptionPane.showMessageDialog(null, "LA LOCALIDAD SELECCIONADA ESTA EN USO", "LOCALIDAD",
+							JOptionPane.WARNING_MESSAGE);
+				}
 			}
+			this.llenarTabla();
 			this.llenarTablaLocalidades();
+			llenarTablaTipoDeContactos();
 		} else if (e.getSource() == this.vista.getBtnEditarLocalidad()) {
 			int[] filas_seleccionadas = this.vista.getTablaLocalidades().getSelectedRows();
 			if (filas_seleccionadas.length == 0) {
@@ -194,6 +209,7 @@ public class Controlador implements ActionListener {
 					localidad = this.localidadesEnTabla.get(fila);
 				}
 				this.ventanaLocalidad = new VentanaLocalidad(this);
+				this.ventanaLocalidad.getTextId().setText(localidad.getIdLocalidad() + "");
 				this.ventanaLocalidad.getTxtLocalidad().setText(localidad.getLocalidad());
 			}
 		} else if (e.getSource() == this.vista.getBtnEditarTipoDeContacto()) {
@@ -207,8 +223,8 @@ public class Controlador implements ActionListener {
 					tipoDeContacto = this.tipoDeContactosEnTabla.get(fila);
 				}
 				this.ventanaTipoDeContacto = new VentanaTipoDeContacto(this);
+				this.ventanaTipoDeContacto.getTxtId().setText(tipoDeContacto.getIdTipoDeContacto() + "");
 				this.ventanaTipoDeContacto.getTxtTipoDeContacto().setText(tipoDeContacto.getTipoDeContacto());
-				;
 			}
 		} else if (e.getSource() == this.vista.getBtnCerrarAgenda()) {
 			this.vista.cerrarAgenda();
@@ -227,10 +243,20 @@ public class Controlador implements ActionListener {
 				JOptionPane.showMessageDialog(null, "INGRESA UN NOMBRE DE LOCALIDAD", "LOCALIDAD",
 						JOptionPane.WARNING_MESSAGE);
 			} else {
-				LocalidadDTO localidad = new LocalidadDTO(0, this.ventanaLocalidad.getTxtLocalidad().getText());
-				this.agenda.agregarLocalidad(localidad);
-				llenarTablaLocalidades();
-				this.ventanaLocalidad.dispose();
+				if (this.ventanaLocalidad.getTextId().getText().equals("")) {
+					LocalidadDTO localidad = new LocalidadDTO(0, this.ventanaLocalidad.getTxtLocalidad().getText());
+					this.agenda.agregarLocalidad(localidad);
+					this.ventanaLocalidad.dispose();
+				} else {
+					LocalidadDTO localidad = new LocalidadDTO(
+							Long.parseLong(this.ventanaLocalidad.getTextId().getText()),
+							this.ventanaLocalidad.getTxtLocalidad().getText());
+					this.agenda.actualizarLocalidad(localidad);
+					this.ventanaLocalidad.dispose();
+				}
+				this.llenarTabla();
+				this.llenarTablaLocalidades();
+				llenarTablaTipoDeContactos();
 			}
 		} else if (this.ventanaTipoDeContacto != null
 				&& e.getSource() == this.ventanaTipoDeContacto.getBtnAgregarTipoDeContacto()) {
@@ -238,12 +264,23 @@ public class Controlador implements ActionListener {
 				JOptionPane.showMessageDialog(null, "INGRESA UN TIPO DE CONTACTO", "TIPO DE CONTACTO",
 						JOptionPane.WARNING_MESSAGE);
 			} else {
-				TipoDeContactoDTO tipoDeContacto = new TipoDeContactoDTO(0,
-						this.ventanaTipoDeContacto.getTxtTipoDeContacto().getText());
-				this.agenda.agregarTipoDeContacto(tipoDeContacto);
-				llenarTablaTipoDeContactos();
-				this.ventanaTipoDeContacto.dispose();
+
+				if (this.ventanaTipoDeContacto.getTxtId().getText().equals("")) {
+					TipoDeContactoDTO tipoDeContacto = new TipoDeContactoDTO(0,
+							this.ventanaTipoDeContacto.getTxtTipoDeContacto().getText());
+					this.agenda.agregarTipoDeContacto(tipoDeContacto);
+					this.ventanaTipoDeContacto.dispose();
+				} else {
+					TipoDeContactoDTO tipoDeContacto = new TipoDeContactoDTO(
+							Long.parseLong(this.ventanaTipoDeContacto.getTxtId().getText()),
+							this.ventanaTipoDeContacto.getTxtTipoDeContacto().getText());
+					this.agenda.actualizarTipoDeContacto(tipoDeContacto);
+					this.ventanaTipoDeContacto.dispose();
+				}
 			}
+			this.llenarTabla();
+			this.llenarTablaLocalidades();
+			llenarTablaTipoDeContactos();
 		}
 
 	}

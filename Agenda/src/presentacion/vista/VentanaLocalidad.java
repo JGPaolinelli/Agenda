@@ -16,6 +16,7 @@ public class VentanaLocalidad extends JFrame {
 	private JTextField txtLocalidad;
 	private JButton btnAgregarLocalidad;
 	private Controlador controlador;
+	private JTextField textId;
 	
 	public VentanaLocalidad(Controlador controlador) {
 		this.controlador = controlador;
@@ -28,23 +29,29 @@ public class VentanaLocalidad extends JFrame {
 		contentPanel.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 300, 150);
+		panel.setBounds(0, 0, 284, 141);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 
 		JLabel lblLocalidad = new JLabel("Localidad:");
-		lblLocalidad.setBounds(10, 20, 113, 14);
+		lblLocalidad.setBounds(10, 37, 79, 14);
 		panel.add(lblLocalidad);
 		
 		txtLocalidad = new JTextField();
-		txtLocalidad.setBounds(80, 20, 164, 20);
+		txtLocalidad.setBounds(99, 34, 164, 20);
 		panel.add(txtLocalidad);
 		txtLocalidad.setColumns(10);
 		
 		btnAgregarLocalidad = new JButton("Agregar");
 		btnAgregarLocalidad.addActionListener(this.controlador);
-		btnAgregarLocalidad.setBounds(80, 80, 89, 23);
+		btnAgregarLocalidad.setBounds(73, 80, 118, 23);
 		panel.add(btnAgregarLocalidad);
+		
+		textId = new JTextField();
+		textId.setBounds(10, 110, 86, 20);
+		panel.add(textId);
+		textId.setColumns(10);
+		textId.setVisible(false);
 
 		this.setVisible(true);
 	}
@@ -52,9 +59,12 @@ public class VentanaLocalidad extends JFrame {
 	public JTextField getTxtLocalidad() {
 		return txtLocalidad;
 	}
+	
+	public JTextField getTextId() {
+		return textId;
+	}
 
 	public JButton getBtnAgregarLocalidad() {
 		return btnAgregarLocalidad;
 	}
-	
 }

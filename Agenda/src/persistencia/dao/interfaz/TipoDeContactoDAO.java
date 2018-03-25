@@ -9,6 +9,8 @@ public interface TipoDeContactoDAO {
 
 	public boolean delete(TipoDeContactoDTO tipoDeContactoParaEliminar);
 	
+	public boolean isUsed(TipoDeContactoDTO tipoDeContacto);
+	
 	public boolean update(TipoDeContactoDTO tipoDeContactoParaActualizar);
 
 	public List<TipoDeContactoDTO> readAll();
