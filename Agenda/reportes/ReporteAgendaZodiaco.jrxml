@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteAgendaZodiaco" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6409ead6-7c11-40ba-866f-9c355645cb69">
+	<property name="ireport.zoom" value="0.9090909090909094"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="Fecha" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="fechaDeNacimiento" class="java.util.Date"/>
+	<field name="signoZodiaco" class="java.lang.String"/>
+	<variable name="ROW_COUNTER" class="java.lang.Integer" resetType="Group" resetGroup="Zodiaco" calculation="Count">
+		<variableExpression><![CDATA[new java.lang.Integer(1)]]></variableExpression>
+		<initialValueExpression><![CDATA[new java.lang.Integer(0)]]></initialValueExpression>
+	</variable>
+	<group name="Zodiaco">
+		<groupExpression><![CDATA[$F{signoZodiaco}]]></groupExpression>
+		<groupHeader>
+			<band height="36">
+				<rectangle radius="10">
+					<reportElement x="-10" y="0" width="572" height="32" forecolor="#CCCCFF" backcolor="#CCCCFF" uuid="e23218d5-0b44-4196-9d33-5f146d731022"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="2" y="18" width="100" height="14" uuid="9edd151e-2245-4dc4-b89d-4db35eecb023"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Nombre]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="108" y="18" width="100" height="14" uuid="1c258ef7-59b5-42ce-a08a-0f144ce15449"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Telefono]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="216" y="18" width="100" height="14" uuid="29c787a4-730f-4266-a3fd-c3806a0fb2c9"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Email]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="326" y="18" width="121" height="14" uuid="fcb862cc-0902-4471-84cf-4e1116abdaea"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Fecha de Nacimiento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="2" y="0" width="71" height="14" uuid="79075f76-3278-4225-a701-538d0f1eff7a"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Signo Zodiaco:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement x="81" y="0" width="100" height="14" uuid="4b4227c1-862c-4673-84f4-9e5d6db568cc"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{signoZodiaco}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="16">
+				<textField>
+					<reportElement x="326" y="0" width="121" height="14" uuid="ae65c2a8-6c1e-4007-9522-819033a451d6"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[new java.lang.Integer($V{ROW_COUNTER}.intValue())]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="216" y="0" width="100" height="14" uuid="408751d0-05ae-40f0-af52-48c98a7f594d"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[Cantidad Total: ]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="29" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="-10" y="4" width="572" height="22" forecolor="#FF0000" backcolor="#FF0000" uuid="4ea20dd8-5aa5-498b-8129-3b77f956e50d"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="398" y="3" width="100" height="20" forecolor="#FFFFFF" uuid="945d6ddb-3d57-475a-8664-80064f86c77c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte generado el ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="498" y="3" width="54" height="20" forecolor="#FFFFFF" uuid="7ba6e1f5-b4ec-4344-bba3-91d2a8864e09"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="3" width="198" height="21" forecolor="#FFFFFF" uuid="18013611-a25e-4f9b-946c-b3eaa6cb4741"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de personas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="2" y="4" width="160" height="13" uuid="1afe4650-a22f-4c07-aa94-13f33cf725a3"/>
+				<text><![CDATA[Reporte para el ejemplo Agenda]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="2" y="3" width="100" height="20" uuid="5865e9c8-9d2b-42bd-bdcd-10d0d4281245"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="108" y="3" width="100" height="20" uuid="c92efcc3-7ff9-4191-a15d-58d69905efd6"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="216" y="3" width="100" height="20" uuid="10850288-97c7-48a8-9c28-8ffec2a5ec13"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement x="326" y="3" width="121" height="20" uuid="a75ba580-fc81-42de-8b80-75ee46a72ed3"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechaDeNacimiento}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement x="454" y="3" width="108" height="20" uuid="c21858cf-722f-4f76-8478-33b3abf97fa4"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{signoZodiaco}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="137" splitType="Stretch">
+			<pieChart>
+				<chart isShowLegend="false">
+					<reportElement key="" x="180" y="5" width="200" height="125" uuid="db6b6a0d-f887-4bbb-8e66-eaa602555b9b"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<pieDataset maxCount="20">
+					<dataset resetType="None"/>
+					<keyExpression><![CDATA["Signo Zodiachhh"]]></keyExpression>
+					<valueExpression><![CDATA[$V{ROW_COUNTER}]]></valueExpression>
+					<labelExpression><![CDATA[$F{signoZodiaco}]]></labelExpression>
+				</pieDataset>
+				<piePlot labelFormat="{0}{2}" legendLabelFormat="">
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="39" splitType="Stretch">
+			<textField>
+				<reportElement x="351" y="4" width="100" height="30" uuid="b9cdbe55-bfab-46f5-bdb7-63ddb132c6e9"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="451" y="4" width="100" height="30" uuid="ebba13a3-def1-4841-887c-3b669fc66ef3"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
