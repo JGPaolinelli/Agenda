@@ -22,11 +22,14 @@ public class Vista {
 	private JButton btnAgregarPersona;
 	private JButton btnAgregarTipoDeContacto;
 	private JButton btnAgregarLocalidad;
+	private JButton btnEditarLocalidad;
+	private JButton btnEditarTipoDeContacto;
 	private JButton btnBorrar;
 	private JButton btnEditar;
 	private JButton btnReporte;
 	private JButton btnBorrarLocalidad;
 	private JButton btnBorrarTipoDeContacto;
+	private JButton btnCerrarAgenda;
 	private DefaultTableModel modelPersonas;
 	private String[] nombreColumnas = {"Nombre y apellido", "Teléfono", "Correo Electronico", "Fecha de Nacimiento", "Domicilio", "Tipo de Contacto" };
 	private DefaultTableModel modelLocalidades;
@@ -40,12 +43,12 @@ public class Vista {
 
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 851, 584);
+		frame.setBounds(100, 100, 851, 620);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 826, 547);
+		panel.setBounds(0, 0, 826, 579);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -54,11 +57,11 @@ public class Vista {
 		panel.add(spPersonas);
 		
 		JScrollPane spLocalidades = new JScrollPane();
-		spLocalidades.setBounds(461, 262, 200, 200);
+		spLocalidades.setBounds(311, 231, 200, 200);
 		panel.add(spLocalidades);
 		
 		JScrollPane spTipoDeContactos = new JScrollPane();
-		spTipoDeContactos.setBounds(131, 262, 200, 200);
+		spTipoDeContactos.setBounds(20, 231, 200, 200);
 		panel.add(spTipoDeContactos);
 
 		modelPersonas = new DefaultTableModel(null, nombreColumnas);
@@ -88,36 +91,48 @@ public class Vista {
 		spTipoDeContactos.setViewportView(tablaTipoDeContactos);
 
 		btnAgregarPersona = new JButton("Agregar Persona");
-		btnAgregarPersona.setBounds(45, 228, 150, 23);
+		btnAgregarPersona.setBounds(605, 234, 200, 23);
 		panel.add(btnAgregarPersona);
 		
 		btnAgregarTipoDeContacto = new JButton("Agregar Tipo de Contacto");
-		btnAgregarTipoDeContacto.setBounds(131, 473, 200, 23);
+		btnAgregarTipoDeContacto.setBounds(20, 453, 200, 23);
 		panel.add(btnAgregarTipoDeContacto);
 		
 		btnAgregarLocalidad= new JButton("Agregar Localidad");
-		btnAgregarLocalidad.setBounds(488, 473, 150, 23);
+		btnAgregarLocalidad.setBounds(311, 453, 200, 23);
 		panel.add(btnAgregarLocalidad);
 
 		btnEditar = new JButton("Editar Persona");
-		btnEditar.setBounds(234, 228, 130, 23);
+		btnEditar.setBounds(605, 268, 197, 23);
 		panel.add(btnEditar);
 
 		btnBorrar = new JButton("Borrar Persona");
-		btnBorrar.setBounds(420, 228, 130, 23);
+		btnBorrar.setBounds(605, 302, 197, 23);
 		panel.add(btnBorrar);
 		
 		btnReporte = new JButton("Generar Reporte");
-		btnReporte.setBounds(600, 228, 130, 23);
+		btnReporte.setBounds(599, 508, 211, 23);
 		panel.add(btnReporte);
 		
 		btnBorrarLocalidad = new JButton("Borrar Localidad");
-		btnBorrarLocalidad.setBounds(498, 507, 130, 23);
+		btnBorrarLocalidad.setBounds(311, 487, 200, 23);
 		panel.add(btnBorrarLocalidad);
 		
 		btnBorrarTipoDeContacto = new JButton("Borrar Tipo De Contacto");
-		btnBorrarTipoDeContacto.setBounds(131, 507, 200, 23);
+		btnBorrarTipoDeContacto.setBounds(20, 487, 200, 23);
 		panel.add(btnBorrarTipoDeContacto);
+		
+		btnEditarLocalidad = new JButton("Editar Localidad");
+		btnEditarLocalidad.setBounds(311, 521, 197, 23);
+		panel.add(btnEditarLocalidad);
+		
+		btnEditarTipoDeContacto = new JButton("Editar Tipo de Contacto");
+		btnEditarTipoDeContacto.setBounds(23, 521, 197, 23);
+		panel.add(btnEditarTipoDeContacto);
+		
+		btnCerrarAgenda = new JButton("Cerrar Agenda");
+		btnCerrarAgenda.setBounds(599, 545, 211, 23);
+		panel.add(btnCerrarAgenda);
 	}
 
 	public void show() {
@@ -135,7 +150,16 @@ public class Vista {
 		});
 		this.frame.setVisible(true);
 	}
-
+	
+	public void cerrarAgenda() {
+		int confirm = JOptionPane.showOptionDialog(null, "Estas seguro que quieres salir de la Agenda!?",
+				"Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		if (confirm == 0) {
+			Conexion.getConexion().cerrarConexion();
+			System.exit(0);
+		}
+	}
+	
 	public JButton getBtnAgregarPersona() {
 		return btnAgregarPersona;
 	}
@@ -166,6 +190,19 @@ public class Vista {
 	
 	public JButton getBtnReporte() {
 		return btnReporte;
+	}
+	
+
+	public JButton getBtnEditarLocalidad() {
+		return btnEditarLocalidad;
+	}
+
+	public JButton getBtnEditarTipoDeContacto() {
+		return btnEditarTipoDeContacto;
+	}
+
+	public JButton getBtnCerrarAgenda() {
+		return btnCerrarAgenda;
 	}
 
 	public DefaultTableModel getModelPersonas() {

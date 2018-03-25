@@ -18,7 +18,16 @@ public class DomicilioDTO {
 		this.departamento = departamento;
 		this.idLocalidad = idLocalidad;
 	}
-	
+	public DomicilioDTO(long idDomicilio, String calle, int altura, long idLocalidad) {
+		super();
+		this.idDomicilio = idDomicilio;
+		this.calle = calle;
+		this.altura = altura;
+		this.piso = 0;
+		this.departamento = 0;
+		this.idLocalidad = idLocalidad;
+	}
+		
 	public long getIdDomicilio() {
 		return idDomicilio;
 	}

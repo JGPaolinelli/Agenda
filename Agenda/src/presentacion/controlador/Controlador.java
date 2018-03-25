@@ -7,6 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JOptionPane;
 import dto.DomicilioDTO;
 import dto.LocalidadDTO;
@@ -40,6 +43,9 @@ public class Controlador implements ActionListener {
 		this.vista.getBtnEditar().addActionListener(this);
 		this.vista.getBtnBorrarLocalidad().addActionListener(this);
 		this.vista.getBtnBorrarTipoDeContacto().addActionListener(this);
+		this.vista.getBtnEditarLocalidad().addActionListener(this);
+		this.vista.getBtnEditarTipoDeContacto().addActionListener(this);
+		this.vista.getBtnCerrarAgenda().addActionListener(this);
 		this.agenda = agenda;
 		this.personas_en_tabla = null;
 	}
@@ -66,7 +72,7 @@ public class Controlador implements ActionListener {
 					tipoDeContacto = tipoDeContactoDTO;
 				}
 			}
-			Object[] fila = {persona.getNombre(), persona.getTelefono(), persona.getEmail(),
+			Object[] fila = { persona.getNombre(), persona.getTelefono(), persona.getEmail(),
 					persona.getFechaDeNacimiento(), domicilio.getCalle() + " - " + domicilio.getAltura(),
 					tipoDeContacto.getTipoDeContacto() };
 			this.vista.getModelPersonas().addRow(fila);
@@ -104,18 +110,19 @@ public class Controlador implements ActionListener {
 			this.ventanaPersona = new VentanaPersona(this);
 			setLocalidades();
 			setTipoDeContacto();
-			
+
 		} else if (e.getSource() == this.vista.getBtnBorrar()) {
 			int[] filas_seleccionadas = this.vista.getTablaPersonas().getSelectedRows();
 			for (int fila : filas_seleccionadas) {
 				this.agenda.borrarPersona(this.personas_en_tabla.get(fila));
 			}
 			this.llenarTabla();
-			
-		} else if (e.getSource() == this.vista.getBtnReporte()) {			
-			ReporteAgenda reporte = new ReporteAgenda(Herramientas.agregarSignoZodiaco(agenda.obtenerPersonasOrdenadasPorFechaNacimiento()));
+
+		} else if (e.getSource() == this.vista.getBtnReporte()) {
+			ReporteAgenda reporte = new ReporteAgenda(
+					Herramientas.agregarSignoZodiaco(agenda.obtenerPersonasOrdenadasPorFechaNacimiento()));
 			reporte.mostrar();
-			
+
 		} else if (e.getSource() == this.vista.getBtnEditar()) {
 			int[] filas_seleccionadas = this.vista.getTablaPersonas().getSelectedRows();
 			if (filas_seleccionadas.length == 0) {
@@ -138,137 +145,221 @@ public class Controlador implements ActionListener {
 				this.ventanaPersona.getTxtPiso().setText(Integer.toString(domicilio.getPiso()));
 				this.ventanaPersona.getTxtDepartamento().setText(Integer.toString(domicilio.getDepartamento()));
 				this.ventanaPersona.getTxtIdDomicilio().setText(Long.toString(domicilio.getIdDomicilio()));
-				
+
 				setLocalidades();
 				setTipoDeContacto();
-				
+
 				for (int i = 0; i < this.ventanaPersona.getComboBoxLocalidades().getItemCount(); i++) {
-					if (domicilio.getIdLocalidad()==this.ventanaPersona.getComboBoxLocalidades().getItemAt(i).getIdLocalidad()) 
-					{
+					if (domicilio.getIdLocalidad() == this.ventanaPersona.getComboBoxLocalidades().getItemAt(i)
+							.getIdLocalidad()) {
 						this.ventanaPersona.getComboBoxLocalidades().setSelectedIndex(i);
 					}
 				}
-				
+
 				for (int i = 0; i < this.ventanaPersona.getComboBoxTipoDeContacto().getItemCount(); i++) {
-					if (persona.getIdTipoDeContacto()==this.ventanaPersona.getComboBoxTipoDeContacto().getItemAt(i).getIdTipoDeContacto()) {
+					if (persona.getIdTipoDeContacto() == this.ventanaPersona.getComboBoxTipoDeContacto().getItemAt(i)
+							.getIdTipoDeContacto()) {
 						this.ventanaPersona.getComboBoxTipoDeContacto().setSelectedIndex(i);
 					}
 				}
-			
+
 			}
-			
+
 		} else if (e.getSource() == this.vista.getBtnAgregarLocalidad()) {
 			this.ventanaLocalidad = new VentanaLocalidad(this);
-			
+
 		} else if (e.getSource() == this.vista.getBtnAgregarTipoDeContacto()) {
 			this.ventanaTipoDeContacto = new VentanaTipoDeContacto(this);
-			
-		}  else if (e.getSource() == this.vista.getBtnBorrarTipoDeContacto()) {
+
+		} else if (e.getSource() == this.vista.getBtnBorrarTipoDeContacto()) {
 			int[] filas_seleccionadas = this.vista.getTablaTipoDeContactos().getSelectedRows();
 			for (int fila : filas_seleccionadas) {
 				this.agenda.borrartipoDeContacto(this.tipoDeContactosEnTabla.get(fila));
 			}
 			this.llenarTablaTipoDeContactos();
-		}  else if (e.getSource() == this.vista.getBtnBorrarLocalidad()) {
+		} else if (e.getSource() == this.vista.getBtnBorrarLocalidad()) {
 			int[] filas_seleccionadas = this.vista.getTablaLocalidades().getSelectedRows();
 			for (int fila : filas_seleccionadas) {
 				this.agenda.borrarLocalidad(this.localidadesEnTabla.get(fila));
 			}
 			this.llenarTablaLocalidades();
+		} else if (e.getSource() == this.vista.getBtnEditarLocalidad()) {
+			int[] filas_seleccionadas = this.vista.getTablaLocalidades().getSelectedRows();
+			if (filas_seleccionadas.length == 0) {
+				JOptionPane.showMessageDialog(null, "SELECCIONA UNA LOCALIDAD ANTES DE EDITARLA", "ALERTA",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				LocalidadDTO localidad = null;
+				for (int fila : filas_seleccionadas) {
+					localidad = this.localidadesEnTabla.get(fila);
+				}
+				this.ventanaLocalidad = new VentanaLocalidad(this);
+				this.ventanaLocalidad.getTxtLocalidad().setText(localidad.getLocalidad());
+			}
+		} else if (e.getSource() == this.vista.getBtnEditarTipoDeContacto()) {
+			int[] filas_seleccionadas = this.vista.getTablaTipoDeContactos().getSelectedRows();
+			if (filas_seleccionadas.length == 0) {
+				JOptionPane.showMessageDialog(null, "SELECCIONA UN TIPO DE CONTACTO ANTES DE EDITARLO", "ALERTA",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				TipoDeContactoDTO tipoDeContacto = null;
+				for (int fila : filas_seleccionadas) {
+					tipoDeContacto = this.tipoDeContactosEnTabla.get(fila);
+				}
+				this.ventanaTipoDeContacto = new VentanaTipoDeContacto(this);
+				this.ventanaTipoDeContacto.getTxtTipoDeContacto().setText(tipoDeContacto.getTipoDeContacto());
+				;
+			}
+		} else if (e.getSource() == this.vista.getBtnCerrarAgenda()) {
+			this.vista.cerrarAgenda();
 		}
 
 		if (this.ventanaPersona != null && e.getSource() == this.ventanaPersona.getBtnAgregarPersona()) {
 			String idTxt = this.ventanaPersona.getTxtIdPersona().getText();
 			if (idTxt.equals("")) {
-				agregarPersona();				
+				agregarPersona();
 			} else {
 				editarPersona();
-			}			
-			
+			}
+
 		} else if (this.ventanaLocalidad != null && e.getSource() == this.ventanaLocalidad.getBtnAgregarLocalidad()) {
-			LocalidadDTO localidad = new LocalidadDTO(0, this.ventanaLocalidad.getTxtLocalidad().getText());
-			this.agenda.agregarLocalidad(localidad);
-			llenarTablaLocalidades();
-			this.ventanaLocalidad.dispose();
+			if (this.ventanaLocalidad.getTxtLocalidad().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "INGRESA UN NOMBRE DE LOCALIDAD", "LOCALIDAD",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				LocalidadDTO localidad = new LocalidadDTO(0, this.ventanaLocalidad.getTxtLocalidad().getText());
+				this.agenda.agregarLocalidad(localidad);
+				llenarTablaLocalidades();
+				this.ventanaLocalidad.dispose();
+			}
 		} else if (this.ventanaTipoDeContacto != null
 				&& e.getSource() == this.ventanaTipoDeContacto.getBtnAgregarTipoDeContacto()) {
-			TipoDeContactoDTO tipoDeContacto = new TipoDeContactoDTO(0,
-					this.ventanaTipoDeContacto.getTxtTipoDeContacto().getText());
-			this.agenda.agregarTipoDeContacto(tipoDeContacto);
-			llenarTablaTipoDeContactos();
-			this.ventanaTipoDeContacto.dispose();
+			if (this.ventanaTipoDeContacto.getTxtTipoDeContacto().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "INGRESA UN TIPO DE CONTACTO", "TIPO DE CONTACTO",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				TipoDeContactoDTO tipoDeContacto = new TipoDeContactoDTO(0,
+						this.ventanaTipoDeContacto.getTxtTipoDeContacto().getText());
+				this.agenda.agregarTipoDeContacto(tipoDeContacto);
+				llenarTablaTipoDeContactos();
+				this.ventanaTipoDeContacto.dispose();
+			}
 		}
 
 	}
 
 	private void editarPersona() {
 		try {
-			String fechaString = this.ventanaPersona.getTxtFechaDeNacimiento().getText();
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			Date date = format.parse(fechaString);
-			@SuppressWarnings("deprecation")
-			java.sql.Date sqlDate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDay());
+			if (this.ventanaPersona.getTxtTelefono().getText().length() == 0
+					|| this.ventanaPersona.getTxtNombre().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Complete todos los campos obligatorios para la persona", "Persona",
+						JOptionPane.WARNING_MESSAGE);
+			} else if (this.ventanaPersona.getTxtFechaDeNacimiento().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Ingresa la Fecha de Nacimiento", "Persona",
+						JOptionPane.WARNING_MESSAGE);
+			} else if (this.ventanaPersona.getTxtCalle().getText().length() == 0
+					|| this.ventanaPersona.getTxtAltura().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Complete todos los campos obligatorios para el domicilio",
+						"Domicilio", JOptionPane.WARNING_MESSAGE);
+			} else if (this.ventanaPersona.getTxtEmail().getText().length() != 0
+					&& validarMail(this.ventanaPersona.getTxtEmail().getText()) == false) {
+				JOptionPane.showMessageDialog(null, "Ingresa un correo electronico valido", "Email",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				String fechaString = this.ventanaPersona.getTxtFechaDeNacimiento().getText();
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = format.parse(fechaString);
+				@SuppressWarnings("deprecation")
+				java.sql.Date sqlDate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDay());
 
-			LocalidadDTO localidad = (LocalidadDTO) this.ventanaPersona.getComboBoxLocalidades()
-					.getSelectedItem();
-			TipoDeContactoDTO tipoDeContacto = (TipoDeContactoDTO) this.ventanaPersona
-					.getComboBoxTipoDeContacto().getSelectedItem();
+				LocalidadDTO localidad = (LocalidadDTO) this.ventanaPersona.getComboBoxLocalidades().getSelectedItem();
+				TipoDeContactoDTO tipoDeContacto = (TipoDeContactoDTO) this.ventanaPersona.getComboBoxTipoDeContacto()
+						.getSelectedItem();
+				DomicilioDTO domicilio;
+				if (this.ventanaPersona.getTxtPiso().getText().length() == 0
+						&& this.ventanaPersona.getTxtDepartamento().getText().length() == 0) {
+					domicilio = new DomicilioDTO(Long.parseLong(this.ventanaPersona.getTxtIdDomicilio().getText()),
+							this.ventanaPersona.getTxtCalle().getText(),
+							Integer.parseInt(this.ventanaPersona.getTxtAltura().getText()), localidad.getIdLocalidad());
+					this.agenda.actualizarDomicilio(domicilio);
+				} else {
+					domicilio = new DomicilioDTO(Long.parseLong(this.ventanaPersona.getTxtIdDomicilio().getText()),
+							this.ventanaPersona.getTxtCalle().getText(),
+							Integer.parseInt(this.ventanaPersona.getTxtAltura().getText()),
+							Integer.parseInt(this.ventanaPersona.getTxtPiso().getText()),
+							Integer.parseInt(this.ventanaPersona.getTxtDepartamento().getText()),
+							localidad.getIdLocalidad());
+					this.agenda.actualizarDomicilio(domicilio);
+				}
 
-			DomicilioDTO domicilio = new DomicilioDTO(
-									 Long.parseLong(this.ventanaPersona.getTxtIdDomicilio().getText()), 
-									 this.ventanaPersona.getTxtCalle().getText(),
-									 Integer.parseInt(this.ventanaPersona.getTxtAltura().getText()),
-									 Integer.parseInt(this.ventanaPersona.getTxtPiso().getText()),
-									 Integer.parseInt(this.ventanaPersona.getTxtDepartamento().getText()),
-									 localidad.getIdLocalidad());
-			this.agenda.actualizarDomicilio(domicilio);
-
-			PersonaDTO persona = new PersonaDTO(Long.parseLong(
-								 this.ventanaPersona.getTxtIdPersona().getText()), 
-								 this.ventanaPersona.getTxtNombre().getText(),
-								 this.ventanaPersona.getTxtTelefono().getText(), 
-								 this.ventanaPersona.getTxtEmail().getText(),
-								 sqlDate, 
-								 domicilio.getIdDomicilio(), 
-								 tipoDeContacto.getIdTipoDeContacto());
-			this.agenda.actualizarrPersona(persona);
-			this.llenarTabla();
-			this.ventanaPersona.dispose();
-
+				PersonaDTO persona = new PersonaDTO(Long.parseLong(this.ventanaPersona.getTxtIdPersona().getText()),
+						this.ventanaPersona.getTxtNombre().getText(), this.ventanaPersona.getTxtTelefono().getText(),
+						this.ventanaPersona.getTxtEmail().getText(), sqlDate, domicilio.getIdDomicilio(),
+						tipoDeContacto.getIdTipoDeContacto());
+				this.agenda.actualizarrPersona(persona);
+				this.llenarTabla();
+				this.ventanaPersona.dispose();
+			}
 		} catch (ParseException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Formato de Fecha Invalido", "Fecha de Naciminento",
+					JOptionPane.WARNING_MESSAGE);
 		}
+
 	}
 
 	private void agregarPersona() {
 		try {
-			String fechaString = this.ventanaPersona.getTxtFechaDeNacimiento().getText();
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			Date date = format.parse(fechaString);
-			@SuppressWarnings("deprecation")
-			java.sql.Date sqlDate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDay());
+			if (this.ventanaPersona.getTxtTelefono().getText().length() == 0
+					|| this.ventanaPersona.getTxtNombre().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Complete todos los campos obligatorios para la persona", "Persona",
+						JOptionPane.WARNING_MESSAGE);
+			} else if (this.ventanaPersona.getTxtFechaDeNacimiento().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Ingresa la Fecha de Nacimiento", "Persona",
+						JOptionPane.WARNING_MESSAGE);
+			} else if (this.ventanaPersona.getTxtCalle().getText().length() == 0
+					|| this.ventanaPersona.getTxtAltura().getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Complete todos los campos obligatorios para el domicilio",
+						"Domicilio", JOptionPane.WARNING_MESSAGE);
+			} else if (this.ventanaPersona.getTxtEmail().getText().length() != 0
+					&& validarMail(this.ventanaPersona.getTxtEmail().getText()) == false) {
+				JOptionPane.showMessageDialog(null, "Ingresa un correo electronico valido", "Email",
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				String fechaString = this.ventanaPersona.getTxtFechaDeNacimiento().getText();
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = format.parse(fechaString);
+				@SuppressWarnings("deprecation")
+				java.sql.Date sqlDate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDay());
+				LocalidadDTO localidad = (LocalidadDTO) this.ventanaPersona.getComboBoxLocalidades().getSelectedItem();
+				TipoDeContactoDTO tipoDeContacto = (TipoDeContactoDTO) this.ventanaPersona.getComboBoxTipoDeContacto()
+						.getSelectedItem();
 
-			LocalidadDTO localidad = (LocalidadDTO) this.ventanaPersona.getComboBoxLocalidades().getSelectedItem();
-			TipoDeContactoDTO tipoDeContacto = (TipoDeContactoDTO) this.ventanaPersona.getComboBoxTipoDeContacto()
-					.getSelectedItem();
-
-			DomicilioDTO domicilio = new DomicilioDTO(0, this.ventanaPersona.getTxtCalle().getText(),
-					Integer.parseInt(this.ventanaPersona.getTxtAltura().getText()),
-					Integer.parseInt(this.ventanaPersona.getTxtPiso().getText()),
-					Integer.parseInt(this.ventanaPersona.getTxtDepartamento().getText()),
-					localidad.getIdLocalidad());
-			this.agenda.agregarDomicilio(domicilio);
-			int idDomicilio = agenda.idUltimoDomicilioAgregado();
-
-			PersonaDTO persona = new PersonaDTO(0, this.ventanaPersona.getTxtNombre().getText(),
-					this.ventanaPersona.getTxtTelefono().getText(), this.ventanaPersona.getTxtEmail().getText(),
-					sqlDate, idDomicilio, tipoDeContacto.getIdTipoDeContacto());
-			this.agenda.agregarPersona(persona);
-			this.llenarTabla();
-			this.ventanaPersona.dispose();
-
+				if (this.ventanaPersona.getTxtPiso().getText().length() == 0
+						&& this.ventanaPersona.getTxtDepartamento().getText().length() == 0) {
+					DomicilioDTO domicilio = new DomicilioDTO(0, this.ventanaPersona.getTxtCalle().getText(),
+							Integer.parseInt(this.ventanaPersona.getTxtAltura().getText()), localidad.getIdLocalidad());
+					this.agenda.agregarDomicilio(domicilio);
+				} else {
+					DomicilioDTO domicilio = new DomicilioDTO(0, this.ventanaPersona.getTxtCalle().getText(),
+							Integer.parseInt(this.ventanaPersona.getTxtAltura().getText()),
+							Integer.parseInt(this.ventanaPersona.getTxtPiso().getText()),
+							Integer.parseInt(this.ventanaPersona.getTxtDepartamento().getText()),
+							localidad.getIdLocalidad());
+					this.agenda.agregarDomicilio(domicilio);
+				}
+				int idDomicilio = agenda.idUltimoDomicilioAgregado();
+				PersonaDTO persona = new PersonaDTO(0, this.ventanaPersona.getTxtNombre().getText(),
+						this.ventanaPersona.getTxtTelefono().getText(), this.ventanaPersona.getTxtEmail().getText(),
+						sqlDate, idDomicilio, tipoDeContacto.getIdTipoDeContacto());
+				this.agenda.agregarPersona(persona);
+				this.llenarTabla();
+				this.ventanaPersona.dispose();
+			}
 		} catch (ParseException e1) {
 			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Formato de Fecha Invalido", "Fecha de Naciminento",
+					JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
@@ -284,6 +375,13 @@ public class Controlador implements ActionListener {
 		for (TipoDeContactoDTO tipoDeContactoDTO : tiposDeContactos) {
 			this.ventanaPersona.getComboBoxTipoDeContacto().addItem(tipoDeContactoDTO);
 		}
+	}
+
+	private boolean validarMail(String mail) {
+		Pattern pattern = Pattern.compile(
+				"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		Matcher mather = pattern.matcher(mail);
+		return mather.find() == true;
 	}
 
 }
